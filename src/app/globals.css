@@ -392,3 +392,25 @@
   0% { transform: scale(0); }
   100% { transform: scale(1); }
 }
+
+/* =============================================
+   TOUCH TARGETS (min 44×44px on mobile)
+============================================= */
+.btn           { min-height: 44px; }
+.issue-pill,
+.addon-pill    { min-height: 44px; }
+.time-slot     { min-height: 44px; }
+
+/* =============================================
+   MOBILE RESPONSIVE OVERRIDES
+============================================= */
+@media (max-width: 639px) {
+  /* Compact form card on phones */
+  .form-card { padding: 20px; }
+
+  /* Tighter service-row on phones */
+  .service-row { padding: 16px; gap: 12px; }
+
+  /* Phone tooltip is hover-only — hide on touch screens */
+  .phone-tooltip { display: none !important; }
+}

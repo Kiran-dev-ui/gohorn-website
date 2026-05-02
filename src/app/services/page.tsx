@@ -145,7 +145,7 @@ function CellValue({ val, colIdx }: { val: string; colIdx: number }) {
   const isDash = val === "—";
   return (
     <div
-      className={`px-6 py-[18px] text-center text-[15px] border-l border-navy/[0.06] ${colIdx === 1 ? "bg-green/[0.05]" : ""} ${isCheck ? "text-green font-extrabold text-lg" : isDash ? "text-warm-300" : "text-warm-700 font-medium"}`}
+      className={`px-4 lg:px-6 py-[18px] text-center text-[15px] border-l border-navy/[0.06] ${colIdx === 1 ? "bg-green/[0.05]" : ""} ${isCheck ? "text-green font-extrabold text-lg" : isDash ? "text-warm-300" : "text-warm-700 font-medium"}`}
     >
       {val}
     </div>
@@ -158,12 +158,12 @@ export default function ServicesPage() {
       <Nav />
 
       {/* PAGE HERO */}
-      <section className="relative pt-36 pb-20 px-12 overflow-hidden">
+      <section className="relative pt-36 pb-20 px-4 sm:px-6 lg:px-12 overflow-hidden">
         <div className="absolute z-[0] opacity-60" style={{ top: -80, right: -100, width: 420, height: 420, background: "#E8C77A", borderRadius: "40% 60% 65% 35% / 50% 45% 55% 50%" }} />
         <div className="absolute z-[0]" style={{ bottom: -80, left: -60, width: 300, height: 300, background: "#B5A8D4", borderRadius: "60% 40% 35% 65% / 45% 60% 40% 55%", opacity: 0.3 }} />
         <div className="max-w-[760px] mx-auto text-center relative z-[1]">
           <span className="section-label">Services</span>
-          <h1 className="display mb-6" style={{ fontSize: "clamp(44px, 6vw, 72px)" }}>
+          <h1 className="display mb-6" style={{ fontSize: "clamp(36px, 6vw, 72px)" }}>
             Pick a package.<br />Add what you <em className="italic text-green-dark">need.</em>
           </h1>
           <p className="text-lg text-warm-700 max-w-xl mx-auto" style={{ lineHeight: 1.6 }}>
@@ -173,16 +173,15 @@ export default function ServicesPage() {
       </section>
 
       {/* PACKAGES IN DETAIL */}
-      <section className="px-12 pb-8">
+      <section className="px-4 sm:px-6 lg:px-12 pb-8">
         <div className="max-w-[1280px] mx-auto">
           {PACKAGES.map((pkg) => (
             <div
               key={pkg.id}
-              className="grid items-center gap-[60px] py-20 border-b border-navy/[0.08] last:border-0"
-              style={{ gridTemplateColumns: "1fr 1fr" }}
+              className="grid grid-cols-1 lg:grid-cols-2 items-center gap-8 lg:gap-[60px] py-10 lg:py-20 border-b border-navy/[0.08] last:border-0"
             >
-              {/* Photo */}
-              <div className={pkg.reverse ? "order-2" : "order-1"}>
+              {/* Photo — always first on mobile, alternates on desktop */}
+              <div className={pkg.reverse ? "order-1 lg:order-2" : "order-1"}>
                 <div className="relative rounded-[24px] overflow-hidden" style={{ aspectRatio: "4/3" }}>
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src={pkg.img} alt={pkg.alt} className="w-full h-full object-cover" loading="lazy" />
@@ -193,10 +192,10 @@ export default function ServicesPage() {
               </div>
 
               {/* Detail copy */}
-              <div className={pkg.reverse ? "order-1" : "order-2"}>
+              <div className={pkg.reverse ? "order-2 lg:order-1" : "order-2"}>
                 <h2
                   className="font-fraunces mb-3"
-                  style={{ fontSize: "clamp(32px, 4vw, 44px)", fontWeight: 800, lineHeight: 1.1 }}
+                  style={{ fontSize: "clamp(28px, 4vw, 44px)", fontWeight: 800, lineHeight: 1.1 }}
                 >
                   {pkg.name}
                 </h2>
@@ -219,11 +218,11 @@ export default function ServicesPage() {
                   </span>
                 </div>
 
-                <div className="bg-warm-100 rounded-2xl px-7 py-6 mb-7">
+                <div className="bg-warm-100 rounded-2xl px-5 lg:px-7 py-6 mb-7">
                   <h4 className="text-[11px] font-bold uppercase tracking-[1.5px] text-warm-500 mb-4">
                     What&apos;s Included
                   </h4>
-                  <ul className="grid gap-x-5 gap-y-2" style={{ gridTemplateColumns: "1fr 1fr" }}>
+                  <ul className="grid gap-x-5 gap-y-2 grid-cols-1 sm:grid-cols-2">
                     {pkg.includes.map((item) => (
                       <li key={item} className="relative pl-6 text-sm text-navy">
                         <span className="absolute left-0 text-green font-bold">&#10003;</span>
@@ -243,43 +242,45 @@ export default function ServicesPage() {
       </section>
 
       {/* COMPARISON TABLE */}
-      <section className="py-24 px-12">
+      <section className="py-16 px-4 sm:px-6 lg:px-12">
         <div className="max-w-[1280px] mx-auto">
           <span className="section-label">Quick Compare</span>
-          <h2 className="display mb-4" style={{ fontSize: "clamp(36px, 5vw, 56px)" }}>Side by side.</h2>
+          <h2 className="display mb-4" style={{ fontSize: "clamp(30px, 5vw, 56px)" }}>Side by side.</h2>
           <p className="text-lg text-warm-700 max-w-2xl mb-12">Not sure which package fits your car? Here&apos;s everything in one view.</p>
 
-          <div className="bg-white rounded-[24px] overflow-hidden border border-navy/[0.08]">
-            {/* Header */}
-            <div className="grid" style={{ gridTemplateColumns: "1.5fr 1fr 1fr 1fr" }}>
-              <div className="bg-navy px-6 py-5" />
-              {["Express Wash", "Interior Refresh", "Full Detail"].map((col, i) => (
-                <div key={col} className={`bg-navy text-cream px-6 py-5 font-fraunces font-bold text-[17px] text-center border-l border-white/10 ${i === 1 ? "bg-navy-light" : ""}`}>
-                  {col}
-                </div>
-              ))}
-            </div>
-            {/* Feature rows */}
-            {COMPARE_ROWS.map((row, i) => (
-              <div
-                key={row.label}
-                className="grid border-t border-navy/[0.06]"
-                style={{ gridTemplateColumns: "1.5fr 1fr 1fr 1fr", background: i % 2 === 1 ? "#F5F5F0" : "white" }}
-              >
-                <div className="px-6 py-[18px] font-semibold text-navy text-[15px]">{row.label}</div>
-                <CellValue val={row.express} colIdx={0} />
-                <CellValue val={row.interior} colIdx={1} />
-                <CellValue val={row.full} colIdx={2} />
+          <div className="overflow-x-auto">
+            <div className="bg-white rounded-[24px] overflow-hidden border border-navy/[0.08] min-w-[560px]">
+              {/* Header */}
+              <div className="grid" style={{ gridTemplateColumns: "1.5fr 1fr 1fr 1fr" }}>
+                <div className="bg-navy px-4 lg:px-6 py-5" />
+                {["Express Wash", "Interior Refresh", "Full Detail"].map((col, i) => (
+                  <div key={col} className={`bg-navy text-cream px-4 lg:px-6 py-5 font-fraunces font-bold text-[15px] lg:text-[17px] text-center border-l border-white/10 ${i === 1 ? "bg-navy-light" : ""}`}>
+                    {col}
+                  </div>
+                ))}
               </div>
-            ))}
-            {/* Price row */}
-            <div className="grid border-t border-navy/10 bg-warm-100" style={{ gridTemplateColumns: "1.5fr 1fr 1fr 1fr" }}>
-              <div className="px-6 py-5 font-fraunces text-[17px] text-navy font-bold">Starting at</div>
-              {[{ price: "$69", hi: false }, { price: "$149", hi: true }, { price: "$239", hi: false }].map(({ price, hi }) => (
-                <div key={price} className={`px-6 py-5 text-center font-bold text-green-dark text-[17px] border-l border-navy/[0.06] ${hi ? "bg-green/[0.05]" : ""}`}>
-                  {price}
+              {/* Feature rows */}
+              {COMPARE_ROWS.map((row, i) => (
+                <div
+                  key={row.label}
+                  className="grid border-t border-navy/[0.06]"
+                  style={{ gridTemplateColumns: "1.5fr 1fr 1fr 1fr", background: i % 2 === 1 ? "#F5F5F0" : "white" }}
+                >
+                  <div className="px-4 lg:px-6 py-[18px] font-semibold text-navy text-[14px] lg:text-[15px]">{row.label}</div>
+                  <CellValue val={row.express} colIdx={0} />
+                  <CellValue val={row.interior} colIdx={1} />
+                  <CellValue val={row.full} colIdx={2} />
                 </div>
               ))}
+              {/* Price row */}
+              <div className="grid border-t border-navy/10 bg-warm-100" style={{ gridTemplateColumns: "1.5fr 1fr 1fr 1fr" }}>
+                <div className="px-4 lg:px-6 py-5 font-fraunces text-[15px] lg:text-[17px] text-navy font-bold">Starting at</div>
+                {[{ price: "$69", hi: false }, { price: "$149", hi: true }, { price: "$239", hi: false }].map(({ price, hi }) => (
+                  <div key={price} className={`px-4 lg:px-6 py-5 text-center font-bold text-green-dark text-[15px] lg:text-[17px] border-l border-navy/[0.06] ${hi ? "bg-green/[0.05]" : ""}`}>
+                    {price}
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
           <p className="text-center mt-8 text-warm-500 text-sm">Final price varies by vehicle size and confirmed when you book.</p>
@@ -287,17 +288,17 @@ export default function ServicesPage() {
       </section>
 
       {/* ADD-ONS */}
-      <section className="bg-navy text-cream py-24 px-12">
+      <section className="bg-navy text-cream py-16 px-4 sm:px-6 lg:px-12">
         <div className="max-w-[1280px] mx-auto">
           <span className="section-label text-green-light">Add-ons</span>
-          <h2 className="display text-cream mb-4" style={{ fontSize: "clamp(36px, 5vw, 56px)" }}>
+          <h2 className="display text-cream mb-4" style={{ fontSize: "clamp(30px, 5vw, 56px)" }}>
             Tailor it to your <em className="italic text-green-light">car.</em>
           </h2>
           <p className="text-cream/70 text-lg mb-12 max-w-2xl" style={{ lineHeight: 1.6 }}>
             Stack any add-on onto any package. We&apos;ll quote each one based on your vehicle when you book.
           </p>
 
-          <div className="grid gap-4 mb-12" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))" }}>
+          <div className="grid gap-4 mb-12 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
             {ADDONS.map((addon) => (
               <Link
                 key={addon.name}
@@ -325,21 +326,21 @@ export default function ServicesPage() {
           </div>
 
           <div
-            className="rounded-[20px] p-10 flex items-center justify-between gap-6 flex-wrap border border-green/30"
+            className="rounded-[20px] p-6 sm:p-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 border border-green/30"
             style={{ background: "rgba(63,174,137,0.1)" }}
           >
             <div>
               <h3 className="font-fraunces text-[24px] font-bold mb-1">Need something we didn&apos;t list?</h3>
               <p className="text-cream/70 text-sm">Reach out and tell us what your car needs. We&apos;ll figure it out.</p>
             </div>
-            <Link href="/quote" className="btn btn-green">Get a custom quote &rarr;</Link>
+            <Link href="/quote" className="btn btn-green flex-shrink-0">Get a custom quote &rarr;</Link>
           </div>
         </div>
       </section>
 
       {/* FINAL CTA */}
-      <section className="text-center py-24 px-12 bg-cream">
-        <h2 className="display mb-5" style={{ fontSize: "clamp(36px, 5vw, 56px)" }}>
+      <section className="text-center py-16 px-4 sm:px-6 lg:px-12 bg-cream">
+        <h2 className="display mb-5" style={{ fontSize: "clamp(30px, 5vw, 56px)" }}>
           Ready to make it <em className="italic text-green-dark">shine?</em>
         </h2>
         <p className="text-[18px] text-warm-700 max-w-[540px] mx-auto mb-8" style={{ lineHeight: 1.6 }}>

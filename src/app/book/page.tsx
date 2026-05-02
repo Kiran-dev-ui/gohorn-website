@@ -82,7 +82,7 @@ const DAYS = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
 function StepIndicator({ step }: { step: number }) {
   const labels = ["Service", "Date & Time", "Vehicle", "You"];
   return (
-    <div className="flex items-center justify-center py-8 px-12">
+    <div className="flex items-center justify-center py-8 px-4 sm:px-6 overflow-x-auto">
       {labels.map((label, i) => {
         const n = i + 1;
         const done = n < step;
@@ -102,7 +102,7 @@ function StepIndicator({ step }: { step: number }) {
               </span>
             </div>
             {i < labels.length - 1 && (
-              <div className={`w-14 h-[2px] mx-3 mb-5 transition-colors ${done ? "bg-navy" : "bg-warm-300"}`} />
+              <div className={`w-6 sm:w-14 h-[2px] mx-1 sm:mx-3 mb-5 flex-shrink-0 transition-colors ${done ? "bg-navy" : "bg-warm-300"}`} />
             )}
           </div>
         );
@@ -224,7 +224,7 @@ function BookingSidebar({ service, serviceName, servicePrice, addons, selDate, s
   ];
 
   return (
-    <aside className="bg-white border border-navy/[0.08] rounded-[24px] p-7" style={{ position: "sticky", top: 100, boxShadow: "0 8px 30px rgba(31,36,51,0.06)" }}>
+    <aside className="bg-white border border-navy/[0.08] rounded-[24px] p-7 lg:sticky lg:top-[100px]" style={{ boxShadow: "0 8px 30px rgba(31,36,51,0.06)" }}>
       <h3 className="font-fraunces text-[20px] font-bold mb-1">Your booking</h3>
       <p className="text-sm text-warm-500 mb-5">Everything updates as you go.</p>
       {lines.map(({ label, value, empty }) => (
@@ -418,12 +418,12 @@ function BookPageInner() {
 
       {/* PAGE HERO */}
       {!submitted && (
-        <section className="relative pt-40 pb-6 px-12 overflow-hidden text-center">
+        <section className="relative pt-40 pb-6 px-4 sm:px-6 lg:px-12 overflow-hidden text-center">
           <div className="absolute z-[0] opacity-50" style={{ top: 80, right: -60, width: 220, height: 220, background: "#E8C77A", borderRadius: "40% 60% 65% 35% / 50% 45% 55% 50%" }} />
           <div className="absolute z-[0]" style={{ bottom: -60, left: -40, width: 220, height: 220, background: "#C5D4B5", borderRadius: "60% 40% 35% 65% / 45% 60% 40% 55%", opacity: 0.5 }} />
           <div className="relative z-[1]">
             <span className="section-label">Book Your Detail</span>
-            <h1 className="display mb-4" style={{ fontSize: "clamp(44px, 6vw, 72px)" }}>
+            <h1 className="display mb-4" style={{ fontSize: "clamp(36px, 6vw, 72px)" }}>
               A few steps,<br />and you&apos;re <em className="italic text-green-dark">set.</em>
             </h1>
             <p className="text-[18px] text-warm-700 max-w-[540px] mx-auto" style={{ lineHeight: 1.6 }}>
@@ -437,7 +437,7 @@ function BookPageInner() {
       {!submitted && <StepIndicator step={step} />}
 
       {/* MAIN CONTENT */}
-      <section className={submitted ? "pt-24 pb-24 px-12" : "pb-24 px-12"}>
+      <section className={submitted ? "pt-24 pb-24 px-4 sm:px-6 lg:px-12" : "pb-24 px-4 sm:px-6 lg:px-12"}>
         <div className="max-w-[1280px] mx-auto">
 
           {submitted ? (
@@ -448,7 +448,7 @@ function BookPageInner() {
               servicePrice={servicePrice} firstTime={firstTime}
             />
           ) : (
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 380px", gap: 32, alignItems: "start" }}>
+            <div className="grid grid-cols-1 lg:[grid-template-columns:1fr_380px] gap-6 lg:gap-8 items-start">
 
               {/* ── LEFT: STEP CONTENT ── */}
               <div className="form-card">
@@ -484,7 +484,7 @@ function BookPageInner() {
 
                     <h3 className="font-fraunces text-[18px] font-bold mb-1.5">Add-ons (optional)</h3>
                     <p className="text-[15px] text-warm-700 mb-4">Stack extras if your car needs them. We&apos;ll quote each one when we call.</p>
-                    <div className="grid gap-2.5 mb-8" style={{ gridTemplateColumns: "1fr 1fr" }}>
+                    <div className="grid gap-2.5 mb-8 grid-cols-2 sm:grid-cols-4">
                       {ADDONS.map(a => (
                         <label key={a.value} className="addon-pill">
                           <input type="checkbox" name="addons" value={a.value}
@@ -513,7 +513,7 @@ function BookPageInner() {
                     <h2 className="font-fraunces text-[28px] font-extrabold mb-2 leading-tight">When works for you?</h2>
                     <p className="text-[15px] text-warm-700 mb-8">We&apos;re open every day, 9 AM to 8 PM. Pick a date, then a time.</p>
 
-                    <div className="grid gap-8 mb-8" style={{ gridTemplateColumns: "1fr 1fr" }}>
+                    <div className="grid gap-6 mb-8 grid-cols-1 md:grid-cols-2">
                       <Calendar calYear={calYear} calMonth={calMonth} selDate={selDate}
                         onMonthChange={handleMonthChange} onSelect={handleDateSelect} />
                       <TimeSlots selDate={selDate} selTime={selTime} onSelect={t => setSelTime(t)} />
@@ -536,14 +536,14 @@ function BookPageInner() {
                     <h2 className="font-fraunces text-[28px] font-extrabold mb-2 leading-tight">Tell us about your car</h2>
                     <p className="text-[15px] text-warm-700 mb-8">Helps us match the price to your vehicle when we call to confirm.</p>
 
-                    <div className="grid gap-5 mb-6" style={{ gridTemplateColumns: "1fr 1fr 1fr" }}>
+                    <div className="grid gap-5 mb-6 grid-cols-1 sm:grid-cols-3">
                       <div className="field"><label>Year</label><input type="number" placeholder="2020" min="1950" max="2027" value={vYear} onChange={e => setVYear(e.target.value)} /></div>
                       <div className="field"><label>Make</label><input type="text" placeholder="Toyota" value={vMake} onChange={e => setVMake(e.target.value)} /></div>
                       <div className="field"><label>Model</label><input type="text" placeholder="Camry" value={vModel} onChange={e => setVModel(e.target.value)} /></div>
                     </div>
 
                     <h3 className="font-fraunces text-[18px] font-bold mb-3">Vehicle size</h3>
-                    <div className="grid gap-3 mb-8" style={{ gridTemplateColumns: "repeat(3, 1fr)" }}>
+                    <div className="grid gap-3 mb-8 grid-cols-1 sm:grid-cols-3">
                       {[
                         { value: "small",  title: "Small",  meta: "Sedan, coupe, hatchback" },
                         { value: "medium", title: "Medium", meta: "Mid-size SUV, crossover" },
@@ -558,7 +558,7 @@ function BookPageInner() {
                     </div>
 
                     <h3 className="font-fraunces text-[18px] font-bold mb-3">Where would you like the service?</h3>
-                    <div className="grid gap-4 mb-5" style={{ gridTemplateColumns: "1fr 1fr" }}>
+                    <div className="grid gap-4 mb-5 grid-cols-1 sm:grid-cols-2">
                       {[
                         {
                           value: "shop" as const, title: "At our shop",
@@ -601,7 +601,7 @@ function BookPageInner() {
                     <h2 className="font-fraunces text-[28px] font-extrabold mb-2 leading-tight">Last step. Who do we call?</h2>
                     <p className="text-[15px] text-warm-700 mb-8">We&apos;ll call to confirm the exact price for your car and lock in your booking.</p>
 
-                    <div className="grid gap-5 mb-5" style={{ gridTemplateColumns: "1fr 1fr" }}>
+                    <div className="grid gap-5 mb-5 grid-cols-1 sm:grid-cols-2">
                       <div className="field">
                         <label>Full name <span className="required">*</span></label>
                         <input type="text" placeholder="Your name" value={name}

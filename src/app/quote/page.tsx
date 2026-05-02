@@ -147,7 +147,7 @@ export default function QuotePage() {
       <Nav />
 
       {/* PAGE HERO */}
-      <section className="relative pt-40 pb-16 px-12 overflow-hidden text-center">
+      <section className="relative pt-40 pb-16 px-4 sm:px-6 lg:px-12 overflow-hidden text-center">
         <div
           className="absolute z-[0] opacity-50"
           style={{ top: 100, right: -60, width: 240, height: 240, background: "#E8C77A", borderRadius: "40% 60% 65% 35% / 50% 45% 55% 50%" }}
@@ -158,7 +158,7 @@ export default function QuotePage() {
         />
         <div className="relative z-[1] max-w-[700px] mx-auto">
           <span className="section-label">Free Quote</span>
-          <h1 className="display mb-5" style={{ fontSize: "clamp(48px, 6vw, 80px)" }}>
+          <h1 className="display mb-5" style={{ fontSize: "clamp(36px, 6vw, 80px)" }}>
             Tell us about<br />your <em className="italic text-green-dark">ride.</em>
           </h1>
           <p className="text-[19px] text-warm-700 max-w-[600px] mx-auto" style={{ lineHeight: 1.6 }}>
@@ -168,9 +168,9 @@ export default function QuotePage() {
       </section>
 
       {/* FORM + SIDEBAR */}
-      <section className="pb-24 px-12" style={{ paddingTop: 40 }}>
+      <section className="pb-24 px-4 sm:px-6 lg:px-12" style={{ paddingTop: 40 }}>
         <div className="max-w-[1280px] mx-auto">
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 380px", gap: 48, alignItems: "start" }}>
+          <div className="grid grid-cols-1 lg:[grid-template-columns:1fr_380px] gap-8 lg:gap-12 items-start">
 
             {/* LEFT: FORM or SUCCESS STATE */}
             {submitted ? <SuccessCard /> : (
@@ -179,7 +179,7 @@ export default function QuotePage() {
 
                   {/* 1. CONTACT INFO */}
                   <FormSection num={1} title="Your contact info" desc="So we know who to call back with the quote.">
-                    <div className="grid gap-5 mb-5" style={{ gridTemplateColumns: "1fr 1fr" }}>
+                    <div className="grid gap-5 mb-5 grid-cols-1 sm:grid-cols-2">
                       <div className="field">
                         <label>Full name <span className="required">*</span></label>
                         <input type="text" name="name" required placeholder="Your name" />
@@ -212,7 +212,7 @@ export default function QuotePage() {
 
                   {/* 2. VEHICLE */}
                   <FormSection num={2} title="About your vehicle" desc="Helps us figure out the right pricing for your car size.">
-                    <div className="grid gap-5 mb-5" style={{ gridTemplateColumns: "1fr 1fr 1fr" }}>
+                    <div className="grid gap-5 mb-5 grid-cols-1 sm:grid-cols-3">
                       <div className="field">
                         <label>Year</label>
                         <input type="number" name="year" placeholder="2020" min="1950" max="2027" />
@@ -228,7 +228,7 @@ export default function QuotePage() {
                     </div>
                     <div className="field">
                       <label>Vehicle size <span className="required">*</span></label>
-                      <div className="grid gap-3 mt-1" style={{ gridTemplateColumns: "repeat(3, 1fr)" }}>
+                      <div className="grid gap-3 mt-1 grid-cols-1 sm:grid-cols-3">
                         {[
                           { value: "small",  title: "Small",  meta: "Sedan, coupe, hatchback" },
                           { value: "medium", title: "Medium", meta: "Mid-size SUV, crossover" },
@@ -246,7 +246,7 @@ export default function QuotePage() {
 
                   {/* 3. SERVICE INTEREST */}
                   <FormSection num={3} title="What service are you interested in?" desc="Pick the closest fit. We can adjust when we talk.">
-                    <div className="grid gap-3" style={{ gridTemplateColumns: "repeat(3, 1fr)" }}>
+                    <div className="grid gap-3 grid-cols-1 sm:grid-cols-3">
                       {[
                         { value: "express",  title: "Express Wash & Wax", meta: "Quick refresh, exterior focus",   price: "From $69" },
                         { value: "interior", title: "Interior Refresh",    meta: "Deep interior cleaning",          price: "From $149" },
@@ -259,7 +259,7 @@ export default function QuotePage() {
                           <div className="option-price">{svc.price}</div>
                         </label>
                       ))}
-                      <label className="option-card" style={{ gridColumn: "1 / -1" }}>
+                      <label className="option-card col-span-full">
                         <input type="radio" name="service" value="custom" />
                         <div className="option-title">Not sure / Custom</div>
                         <div className="option-meta">Describe what you need below, we&apos;ll figure it out together</div>
@@ -269,7 +269,7 @@ export default function QuotePage() {
 
                   {/* 4. SPECIFIC ISSUES */}
                   <FormSection id="section-issues" num={4} title="Anything specific?" desc="Check anything that applies. Affects our quote.">
-                    <div className="grid gap-2.5" style={{ gridTemplateColumns: "1fr 1fr" }}>
+                    <div className="grid gap-2.5 grid-cols-2">
                       {ISSUES.map((issue) => (
                         <label key={issue.value} className="issue-pill">
                           <input
@@ -293,7 +293,7 @@ export default function QuotePage() {
 
                   {/* 5. WHERE */}
                   <FormSection num={5} title="Where would you like the service?" desc="No extra charge either way.">
-                    <div className="grid gap-3" style={{ gridTemplateColumns: "1fr 1fr" }}>
+                    <div className="grid gap-3 grid-cols-1 sm:grid-cols-2">
                       <label className="option-card">
                         <input type="radio" name="location" value="shop" defaultChecked />
                         <div className="option-title">🏠 At our shop</div>
@@ -349,7 +349,7 @@ export default function QuotePage() {
                   {submitError && (
                     <p className="text-sm mt-2" style={{ color: "#e53e3e" }}>{submitError}</p>
                   )}
-                  <div className="flex items-center justify-between gap-4 mt-8 pt-8 border-t border-navy/[0.08] flex-wrap">
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mt-8 pt-8 border-t border-navy/[0.08]">
                     <span className="text-sm text-warm-500">
                       We&apos;ll get back to you within an hour during business hours (9 AM to 8 PM, every day).
                     </span>
@@ -364,8 +364,8 @@ export default function QuotePage() {
 
             {/* RIGHT: SIDEBAR */}
             <aside
-              className="bg-navy text-cream rounded-[24px] overflow-hidden relative"
-              style={{ padding: "36px 32px", position: "sticky", top: 100 }}
+              className="bg-navy text-cream rounded-[24px] overflow-hidden relative lg:sticky lg:top-[100px]"
+              style={{ padding: "36px 32px" }}
             >
               <div
                 className="absolute rounded-full pointer-events-none"
