@@ -34,3 +34,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# local only — never commit
+.claude/
+_reference/
+*.tmp.txt
+Untitled-*.txt

@@ -2,26 +2,393 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer base {
+  html,
+  body {
+    background-color: #FAF7F0;
+    color: #1F2433;
+    line-height: 1.6;
   }
 }
 
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+/* =============================================
+   BUTTONS
+============================================= */
+@layer components {
+  .btn {
+    @apply px-6 py-3 rounded-full font-semibold no-underline inline-flex items-center gap-2 cursor-pointer font-sans border-0;
+    font-size: 15px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .btn-primary {
+    @apply bg-navy text-cream;
+  }
+  .btn-primary:hover {
+    @apply bg-green;
+    transform: translateY(-2px);
+    box-shadow: 0 12px 28px rgba(63, 174, 137, 0.35);
+  }
+  .btn-green {
+    @apply bg-green text-white;
+  }
+  .btn-green:hover {
+    @apply bg-green-dark;
+    transform: translateY(-2px);
+    box-shadow: 0 12px 28px rgba(63, 174, 137, 0.4);
+  }
+  .btn-ghost {
+    @apply bg-transparent text-navy;
+    border: 1.5px solid #1F2433;
+  }
+  .btn-ghost:hover {
+    @apply bg-navy text-cream;
+  }
+  .btn-ghost-light {
+    @apply bg-transparent text-cream;
+    border: 1.5px solid rgba(255, 255, 255, 0.3);
+  }
+  .btn-ghost-light:hover {
+    @apply bg-white/10;
+  }
+  .btn-lg {
+    @apply px-8 py-4;
+    font-size: 17px;
+  }
+  .btn-white {
+    @apply bg-white text-navy;
+  }
+  .btn-white:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.2);
+  }
+
+  /* DISPLAY / HEADING STYLE */
+  .display {
+    font-family: var(--font-fraunces), serif;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1.05;
+  }
+
+  /* FORM CARD */
+  .form-card {
+    background: white;
+    border-radius: 24px;
+    padding: 48px;
+    border: 1px solid rgba(31, 36, 51, 0.06);
+    box-shadow: 0 20px 60px rgba(31, 36, 51, 0.06);
+  }
+
+  /* OPTION CARDS (radio / checkbox selection tiles) */
+  .option-card {
+    position: relative;
+    padding: 20px;
+    border: 1.5px solid rgba(31, 36, 51, 0.12);
+    border-radius: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: white;
+    display: block;
+  }
+  .option-card:hover { border-color: #5DC4A2; }
+  .option-card input[type="radio"],
+  .option-card input[type="checkbox"] {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+  }
+  .option-card:has(input:checked) {
+    border-color: #3FAE89;
+    background: rgba(63, 174, 137, 0.06);
+    box-shadow: 0 4px 16px rgba(63, 174, 137, 0.12);
+  }
+  .option-title { font-weight: 600; font-size: 15px; margin-bottom: 4px; }
+  .option-meta { font-size: 13px; color: #8A8A85; }
+  .option-price { color: #2A8F6E; font-weight: 600; font-size: 14px; margin-top: 6px; }
+
+  /* ISSUE PILLS (checkbox pills) */
+  .issue-pill {
+    padding: 12px 16px;
+    border: 1.5px solid rgba(31, 36, 51, 0.12);
+    border-radius: 100px;
+    cursor: pointer;
+    font-size: 14px;
+    text-align: center;
+    transition: all 0.2s;
+    background: white;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    user-select: none;
+  }
+  .issue-pill input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+  }
+  .issue-pill:hover { border-color: #5DC4A2; }
+  .issue-pill:has(input:checked) {
+    border-color: #3FAE89;
+    background: #3FAE89;
+    color: white;
+    font-weight: 600;
+  }
+
+  /* SERVICE ROW (book page step 1) */
+  .service-row {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 20px;
+    align-items: center;
+    padding: 24px;
+    border: 1.5px solid rgba(31, 36, 51, 0.12);
+    border-radius: 16px;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: white;
+    position: relative;
+  }
+  .service-row input { position: absolute; opacity: 0; pointer-events: none; }
+  .service-row:hover { border-color: #5DC4A2; }
+  .service-row:has(input:checked) {
+    border-color: #3FAE89;
+    background: rgba(63, 174, 137, 0.04);
+    box-shadow: 0 4px 16px rgba(63, 174, 137, 0.12);
+  }
+
+  /* ADDON PILL (book page, same behavior as issue-pill) */
+  .addon-pill {
+    padding: 14px 16px;
+    border: 1.5px solid rgba(31, 36, 51, 0.12);
+    border-radius: 100px;
+    cursor: pointer;
+    font-size: 14px;
+    text-align: center;
+    transition: all 0.2s;
+    background: white;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    user-select: none;
+  }
+  .addon-pill input { position: absolute; opacity: 0; pointer-events: none; }
+  .addon-pill:hover { border-color: #5DC4A2; }
+  .addon-pill:has(input:checked) {
+    border-color: #3FAE89;
+    background: #3FAE89;
+    color: white;
+    font-weight: 600;
+  }
+
+  /* TIME SLOT (book page step 2) */
+  .time-slot {
+    padding: 12px 8px;
+    border: 1.5px solid rgba(31, 36, 51, 0.12);
+    border-radius: 10px;
+    background: white;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    transition: all 0.15s;
+    text-align: center;
+    font-family: var(--font-inter), sans-serif;
+  }
+  .time-slot:hover:not(.unavailable):not(.selected) { border-color: #5DC4A2; }
+  .time-slot.selected { background: #3FAE89; color: white; border-color: #3FAE89; }
+  .time-slot.unavailable {
+    color: #D4D4D0;
+    cursor: not-allowed;
+    text-decoration: line-through;
+    border-style: dashed;
+  }
+
+  /* LOCATION CARD (book page step 3) */
+  .location-card {
+    border: 1.5px solid rgba(31, 36, 51, 0.12);
+    border-radius: 16px;
+    padding: 24px;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+    display: block;
+  }
+  .location-card input { position: absolute; opacity: 0; pointer-events: none; }
+  .location-card:hover { border-color: #5DC4A2; }
+  .location-card:has(input:checked) {
+    border-color: #3FAE89;
+    background: rgba(63, 174, 137, 0.04);
+    box-shadow: 0 4px 16px rgba(63, 174, 137, 0.12);
+  }
+
+  /* SECTION LABELS / TITLES */
+  .section-label {
+    @apply inline-block text-xs font-semibold uppercase text-green-dark mb-4;
+    letter-spacing: 3px;
+  }
+
+  /* FORM ELEMENTS */
+  .field {
+    @apply flex flex-col gap-2;
+  }
+  .field label {
+    @apply text-sm font-semibold text-navy;
+  }
+  .field input,
+  .field select,
+  .field textarea {
+    @apply w-full bg-white text-navy rounded-xl font-sans;
+    padding: 14px 16px;
+    font-size: 15px;
+    border: 1.5px solid rgba(31, 36, 51, 0.12);
+    transition: all 0.2s;
+  }
+  .field input:focus,
+  .field select:focus,
+  .field textarea:focus {
+    outline: none;
+    border-color: #3FAE89;
+    box-shadow: 0 0 0 4px rgba(63, 174, 137, 0.12);
+  }
+  .field textarea {
+    resize: vertical;
+    min-height: 100px;
+  }
+  .field .helper {
+    @apply text-xs text-warm-500;
+  }
+  .required {
+    @apply text-green-dark ml-0.5;
+  }
 }
 
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
+/* =============================================
+   PHONE HOVER TOOLTIP (pure CSS, no JS)
+============================================= */
+.phone-link {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+  cursor: pointer;
+}
+.phone-tooltip {
+  position: absolute;
+  bottom: calc(100% + 10px);
+  left: 50%;
+  transform: translateX(-50%) translateY(4px);
+  background: #1F2433;
+  color: #FAF7F0;
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  font-family: var(--font-inter), sans-serif;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 8px 20px rgba(31, 36, 51, 0.25);
+  border: 1px solid rgba(63, 174, 137, 0.3);
+  z-index: 50;
+}
+.phone-tooltip::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 5px solid transparent;
+  border-top-color: #1F2433;
+}
+.phone-link:hover .phone-tooltip {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+.phone-link.light .phone-tooltip {
+  background: #FAF7F0;
+  color: #1F2433;
+  border: 1px solid rgba(31, 36, 51, 0.1);
+}
+.phone-link.light .phone-tooltip::after {
+  border-top-color: #FAF7F0;
+}
+
+/* =============================================
+   SVG / LOGO ANIMATIONS
+============================================= */
+.logo-mark-sparkle {
+  transform-origin: center;
+  opacity: 0;
+}
+.logo-mark:hover .logo-mark-sparkle {
+  animation: sparkle 0.8s ease-out;
+}
+.wheel {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: spin 4s linear infinite;
+}
+
+/* =============================================
+   ANIMATION UTILITY CLASSES
+============================================= */
+.animate-idle {
+  animation: idle 3s ease-in-out infinite;
+}
+.animate-hero-idle {
+  animation: heroIdle 3.5s ease-in-out infinite;
+}
+.animate-float {
+  animation: float 4s ease-in-out infinite;
+}
+.animate-float-delay {
+  animation: float 4s ease-in-out infinite 2s;
+}
+.animate-fade-up {
+  animation: fadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+}
+.animate-pulse-dot {
+  animation: pulse 2s infinite;
+}
+.animate-pop {
+  animation: pop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* =============================================
+   KEYFRAMES
+============================================= */
+@keyframes idle {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-1.5px); }
+}
+@keyframes heroIdle {
+  0%, 100% { transform: translateY(0) rotate(-1deg); }
+  50% { transform: translateY(-8px) rotate(1deg); }
+}
+@keyframes sparkle {
+  0% { opacity: 0; transform: scale(0); }
+  50% { opacity: 1; transform: scale(1.2); }
+  100% { opacity: 0; transform: scale(1.4); }
+}
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+@keyframes pop {
+  0% { transform: scale(0); }
+  100% { transform: scale(1); }
 }
