@@ -321,6 +321,7 @@ function BookPageInner() {
   const [vSize, setVSize]                       = useState<string | null>(null);
   const [location, setLocation]                 = useState<"shop" | "mobile">("shop");
   const [address, setAddress]                   = useState("");
+  const [addressError, setAddressError]         = useState("");
 
   // Step 4 — Contact
   const [name, setName]           = useState("");
@@ -571,7 +572,7 @@ function BookPageInner() {
                           icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2"><path d="M1 3h15v13H1zM16 8h4l3 3v5h-7zM5.5 21a2.5 2.5 0 100-5 2.5 2.5 0 000 5zM18.5 21a2.5 2.5 0 100-5 2.5 2.5 0 000 5z" /></svg>,
                         },
                       ].map(opt => (
-                        <label key={opt.value} className="location-card">
+                        <label key={opt.value} className="location-card" onClick={() => { setLocation(opt.value); setAddressError(""); }}>
                           <input type="radio" name="location" value={opt.value} checked={location === opt.value} onChange={() => setLocation(opt.value)} />
                           <div className="w-11 h-11 bg-green rounded-[10px] flex items-center justify-center mb-3.5">{opt.icon}</div>
                           <h4 className="font-fraunces text-[18px] font-bold mb-1">{opt.title}</h4>
@@ -582,15 +583,34 @@ function BookPageInner() {
 
                     {location === "mobile" && (
                       <div className="field mb-5">
-                        <label>Your address</label>
-                        <input type="text" placeholder="Street, city, state, zip" value={address} onChange={e => setAddress(e.target.value)} />
-                        <span className="helper">Where we&apos;ll meet you to do the work.</span>
+                        <label>Your address <span className="required">*</span></label>
+                        <input
+                          type="text"
+                          placeholder="Street, city, state, zip"
+                          value={address}
+                          onChange={e => { setAddress(e.target.value); if (e.target.value.trim()) setAddressError(""); }}
+                          style={addressError ? { borderColor: "#e53e3e" } : {}}
+                        />
+                        {addressError && <span className="text-xs" style={{ color: "#e53e3e" }}>{addressError}</span>}
+                        <span className="helper">Where we&apos;ll come to you to do the work.</span>
                       </div>
                     )}
 
                     <div className="flex justify-between items-center pt-6 border-t border-navy/[0.08] gap-3 flex-wrap">
                       <button type="button" onClick={() => goToStep(2)} className="btn btn-ghost">← Back</button>
-                      <button type="button" onClick={() => goToStep(4)} className="btn btn-primary">Continue →</button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (location === "mobile" && !address.trim()) {
+                            setAddressError("Please enter your address so we know where to go.");
+                            return;
+                          }
+                          goToStep(4);
+                        }}
+                        className="btn btn-primary"
+                      >
+                        Continue →
+                      </button>
                     </div>
                   </div>
                 )}

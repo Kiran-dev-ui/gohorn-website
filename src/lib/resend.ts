@@ -8,6 +8,8 @@ const resend = new Resend(key);
 const FROM    = "GoHorn Detailing <onboarding@resend.dev>";
 const TO      = "kiran@unicorn.love"; // sandbox: must match Resend account email until domain is verified
 const BRAND   = { navy: "#1F2433", green: "#3FAE89", cream: "#FAF7F0", warm: "#F0EBE3" };
+// Set NEXT_PUBLIC_SITE_URL in Vercel env vars (e.g. https://yourdomain.com) for admin links to work in emails
+const SITE    = (process.env.NEXT_PUBLIC_SITE_URL ?? "").replace(/\/$/, "");
 
 function base(title: string, body: string): string {
   return `<!DOCTYPE html>
@@ -124,6 +126,9 @@ export async function sendBookingNotification(b: BookingPayload) {
       ${row("Notes", b.customer_notes ?? null)}
       ${b.first_time_discount ? row("Discount", "✓ First-time 20% discount applied") : ""}
     `)}
+    <p style="margin:28px 0 0;font-size:13px;text-align:center;">
+      <a href="${SITE}/admin/bookings" style="color:${BRAND.green};font-weight:600;text-decoration:none;">View booking in admin panel →</a>
+    </p>
   `;
 
   const { error } = await resend.emails.send({
@@ -183,24 +188,10 @@ export async function sendQuoteNotification(q: QuotePayload) {
       ${row("Location", locationText)}
       ${row("Notes", q.notes ?? null)}
     `)}
-    ${q.photo_urls && q.photo_urls.length > 0 ? `
-    <p style="margin:24px 0 8px;font-size:11px;font-weight:700;color:#aaa;text-transform:uppercase;letter-spacing:1.5px;">
-      Photos (${q.photo_urls.length})
+    ${q.photo_urls && q.photo_urls.length > 0 ? section("Photos", row("Attached", `${q.photo_urls.length} photo${q.photo_urls.length !== 1 ? "s" : ""} &mdash; <a href="${SITE}/admin/quotes" style="color:${BRAND.green};font-weight:600;text-decoration:none;">View in admin panel &rarr;</a>`)) : ""}
+    <p style="margin:28px 0 0;font-size:13px;text-align:center;">
+      <a href="${SITE}/admin/quotes" style="color:${BRAND.green};font-weight:600;text-decoration:none;">View quote in admin panel →</a>
     </p>
-    <table cellpadding="0" cellspacing="0"><tr>
-      ${q.photo_urls.map((url, i) => `
-        <td style="padding:0 8px 0 0;vertical-align:top;">
-          <a href="${url}" target="_blank" style="text-decoration:none;">
-            <img src="${url}" width="180" alt="Photo ${i + 1}"
-              style="display:block;border-radius:8px;border:1px solid #E8E0D8;object-fit:cover;" />
-            <span style="display:block;text-align:center;font-size:11px;color:#888;margin-top:4px;">
-              Photo ${i + 1}
-            </span>
-          </a>
-        </td>
-      `).join("")}
-    </tr></table>
-    ` : ""}
   `;
 
   const { error } = await resend.emails.send({

@@ -1,5 +1,6 @@
 "use client";
 import { useState, useMemo } from "react";
+import Lightbox from "./Lightbox";
 
 export type Quote = {
   id: string;
@@ -14,6 +15,7 @@ export type Quote = {
   issues: string[];
   location: string | null;
   notes: string | null;
+  photo_urls: string[] | null;
   status: string;
   created_at: string;
 };
@@ -82,6 +84,10 @@ export default function QuotesTable({ initialData }: { initialData: Quote[] }) {
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [updatingId, setUpdatingId] = useState<string | null>(null);
 
+  // Lightbox state
+  const [lightboxPhotos, setLightboxPhotos] = useState<string[] | null>(null);
+  const [lightboxIdx, setLightboxIdx]       = useState(0);
+
   const filtered = useMemo(() => {
     const q = search.toLowerCase();
     return rows.filter((r) => {
@@ -113,6 +119,16 @@ export default function QuotesTable({ initialData }: { initialData: Quote[] }) {
 
   return (
     <div>
+      {/* Lightbox */}
+      {lightboxPhotos && (
+        <Lightbox
+          photos={lightboxPhotos}
+          index={lightboxIdx}
+          onClose={() => setLightboxPhotos(null)}
+          onNav={(i) => setLightboxIdx(i)}
+        />
+      )}
+
       {/* Search + filter */}
       <div className="flex flex-col sm:flex-row gap-3 mb-5">
         <div className="relative flex-1 max-w-md">
@@ -155,12 +171,13 @@ export default function QuotesTable({ initialData }: { initialData: Quote[] }) {
           {/* Desktop header */}
           <div
             className="hidden md:grid px-5 py-3 border-b border-navy/[0.08] bg-warm-100 text-[11px] font-bold uppercase tracking-wider text-warm-500"
-            style={{ gridTemplateColumns: "2fr 1.5fr 1.5fr 1fr auto 28px" }}
+            style={{ gridTemplateColumns: "2fr 1.5fr 1.5fr 0.8fr 0.6fr auto 28px" }}
           >
             <span>Customer</span>
             <span>Service interest</span>
             <span>Vehicle</span>
             <span>Issues</span>
+            <span>Photos</span>
             <span>Status</span>
             <span />
           </div>
@@ -169,6 +186,7 @@ export default function QuotesTable({ initialData }: { initialData: Quote[] }) {
             const isExpanded = expandedId === row.id;
             const isLast = idx === filtered.length - 1;
             const issueCount = row.issues?.length ?? 0;
+            const photoCount = row.photo_urls?.length ?? 0;
 
             return (
               <div key={row.id} className={!isLast || isExpanded ? "border-b border-navy/[0.06]" : ""}>
@@ -181,7 +199,7 @@ export default function QuotesTable({ initialData }: { initialData: Quote[] }) {
                   {/* Desktop */}
                   <div
                     className="hidden md:grid items-center gap-4"
-                    style={{ gridTemplateColumns: "2fr 1.5fr 1.5fr 1fr auto 28px" }}
+                    style={{ gridTemplateColumns: "2fr 1.5fr 1.5fr 0.8fr 0.6fr auto 28px" }}
                   >
                     <div>
                       <div className="font-semibold text-navy text-[14px] leading-tight">{row.customer_name}</div>
@@ -193,6 +211,9 @@ export default function QuotesTable({ initialData }: { initialData: Quote[] }) {
                     <div className="text-sm text-navy">{vehicle(row)}</div>
                     <div className="text-sm text-warm-700">
                       {issueCount > 0 ? `${issueCount} issue${issueCount !== 1 ? "s" : ""}` : "—"}
+                    </div>
+                    <div className="text-sm text-warm-700">
+                      {photoCount > 0 ? `${photoCount} photo${photoCount !== 1 ? "s" : ""}` : "—"}
                     </div>
                     <StatusBadge status={row.status} />
                     <svg
@@ -221,7 +242,9 @@ export default function QuotesTable({ initialData }: { initialData: Quote[] }) {
                       {row.service_interest ? (SERVICE_LABELS[row.service_interest] ?? row.service_interest) : "No service selected"}
                     </div>
                     <div className="text-[12px] text-warm-500 mt-0.5">
-                      {vehicle(row)}{issueCount > 0 ? ` · ${issueCount} issue${issueCount !== 1 ? "s" : ""}` : ""}
+                      {vehicle(row)}
+                      {issueCount > 0 ? ` · ${issueCount} issue${issueCount !== 1 ? "s" : ""}` : ""}
+                      {photoCount > 0 ? ` · ${photoCount} photo${photoCount !== 1 ? "s" : ""}` : ""}
                     </div>
                   </div>
                 </div>
@@ -245,6 +268,34 @@ export default function QuotesTable({ initialData }: { initialData: Quote[] }) {
                         <Field label="Notes" value={row.notes} wide />
                       )}
                     </div>
+
+                    {/* Photo thumbnails */}
+                    {photoCount > 0 && (
+                      <div className="mb-5">
+                        <div className="text-[10px] font-bold uppercase tracking-wider text-warm-500 mb-2">
+                          Photos ({photoCount})
+                        </div>
+                        <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-6 gap-2">
+                          {row.photo_urls!.map((url, i) => (
+                            <button
+                              key={i}
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setLightboxPhotos(row.photo_urls!);
+                                setLightboxIdx(i);
+                              }}
+                              className="relative rounded-lg overflow-hidden bg-warm-200 hover:opacity-80 transition-opacity focus:outline-none focus:ring-2 focus:ring-green"
+                              style={{ aspectRatio: "1" }}
+                              aria-label={`View photo ${i + 1}`}
+                            >
+                              {/* eslint-disable-next-line @next/next/no-img-element */}
+                              <img src={url} alt={`Photo ${i + 1}`} className="w-full h-full object-cover" />
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    )}
 
                     <div className="flex items-center gap-3 flex-wrap">
                       <span className="text-xs font-bold uppercase tracking-wider text-warm-500">Update status</span>
