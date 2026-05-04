@@ -3,6 +3,62 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
+import { supabase } from "@/lib/supabase";
+
+// ─── Photo upload config ──────────────────────────────────────────────────────
+const ALLOWED_TYPES  = ["image/jpeg", "image/png"];
+const MAX_FILE_BYTES = 10 * 1024 * 1024; // 10 MB
+const MAX_PHOTOS     = 5;
+
+function validatePhotos(files: File[]): string {
+  const combined = files;
+  if (combined.length > MAX_PHOTOS) return `Maximum ${MAX_PHOTOS} photos allowed.`;
+  for (const f of combined) {
+    if (!ALLOWED_TYPES.includes(f.type)) {
+      return `"${f.name}" is not supported. Please use JPG or PNG.`;
+    }
+    if (f.size > MAX_FILE_BYTES) {
+      const mb = (f.size / 1024 / 1024).toFixed(1);
+      return `"${f.name}" is ${mb} MB — must be under 10 MB.`;
+    }
+  }
+  return "";
+}
+
+async function uploadPhotos(files: File[]): Promise<string[]> {
+  const uploadedPaths: string[] = [];
+  const urls: string[] = [];
+
+  try {
+    for (const file of files) {
+      const ext  = file.name.split(".").pop()?.toLowerCase() ?? "jpg";
+      const path = `quotes/${crypto.randomUUID()}.${ext}`;
+
+      const { error } = await supabase.storage
+        .from("quote-photos")
+        .upload(path, file, { contentType: file.type });
+
+      if (error) throw new Error(`Failed to upload "${file.name}": ${error.message}`);
+
+      uploadedPaths.push(path);
+
+      const { data } = supabase.storage
+        .from("quote-photos")
+        .getPublicUrl(path);
+
+      urls.push(data.publicUrl);
+    }
+    return urls;
+  } catch (err) {
+    // Clean up any already-uploaded files so we don't leave orphans
+    if (uploadedPaths.length > 0) {
+      await supabase.storage.from("quote-photos").remove(uploadedPaths);
+    }
+    throw err;
+  }
+}
+
+// ─── Static data ──────────────────────────────────────────────────────────────
 
 const TIMELINE = [
   { title: "You send the request", desc: "Fill out this form. Takes about 2 minutes." },
@@ -21,6 +77,14 @@ const ISSUES = [
   { value: "ceramic",    label: "🛡 Ceramic coating interest" },
   { value: "engine",     label: "🔧 Engine bay cleaning" },
 ];
+
+const CHECKBOX_ADDONS = ["pet_hair", "stains", "odor", "headlights", "ceramic", "engine"];
+const NOTES_ADDONS: Record<string, string> = {
+  clay:    "I'm interested in Clay Bar Treatment",
+  leather: "I'm interested in Leather Conditioning",
+};
+
+// ─── Sub-components ───────────────────────────────────────────────────────────
 
 function FormSection({
   num, title, desc, children, id,
@@ -70,15 +134,13 @@ function validatePhone(value: string): string {
   return "";
 }
 
-const CHECKBOX_ADDONS = ["pet_hair", "stains", "odor", "headlights", "ceramic", "engine"];
-const NOTES_ADDONS: Record<string, string> = {
-  clay:    "I'm interested in Clay Bar Treatment",
-  leather: "I'm interested in Leather Conditioning",
-};
+// ─── Page ─────────────────────────────────────────────────────────────────────
 
 export default function QuotePage() {
   const [submitted, setSubmitted]         = useState(false);
-  const [fileCount, setFileCount]         = useState(0);
+  const [photos, setPhotos]               = useState<File[]>([]);
+  const [photoError, setPhotoError]       = useState("");
+  const [uploadStatus, setUploadStatus]   = useState("");
   const [phone, setPhone]                 = useState("");
   const [phoneError, setPhoneError]       = useState("");
   const [checkedIssues, setCheckedIssues] = useState<string[]>([]);
@@ -104,15 +166,55 @@ export default function QuotePage() {
     }
   }, []);
 
+  function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const picked = Array.from(e.target.files ?? []);
+    e.target.value = ""; // reset so same file can be re-selected after removal
+    if (picked.length === 0) return;
+
+    const combined = [...photos, ...picked];
+    const err = validatePhotos(combined);
+    if (err) {
+      setPhotoError(err);
+      return;
+    }
+    setPhotoError("");
+    setPhotos(combined);
+  }
+
+  function removePhoto(idx: number) {
+    setPhotos((prev) => prev.filter((_, i) => i !== idx));
+    setPhotoError("");
+  }
+
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    // Collect form data immediately — before any awaits — so currentTarget stays valid
+    const fd = new FormData(e.currentTarget);
+
     const err = validatePhone(phone);
     if (err) { setPhoneError(err); return; }
 
     setIsSubmitting(true);
     setSubmitError("");
 
-    const fd = new FormData(e.currentTarget);
+    // Upload photos first if any are selected
+    let photoUrls: string[] = [];
+    if (photos.length > 0) {
+      setUploadStatus(`Uploading ${photos.length} photo${photos.length !== 1 ? "s" : ""}…`);
+      try {
+        photoUrls = await uploadPhotos(photos);
+      } catch (uploadErr) {
+        setSubmitError(
+          uploadErr instanceof Error
+            ? uploadErr.message
+            : "Photo upload failed. Please try again."
+        );
+        setIsSubmitting(false);
+        setUploadStatus("");
+        return;
+      }
+      setUploadStatus("Saving your request…");
+    }
 
     const res = await fetch("/api/quotes", {
       method: "POST",
@@ -129,8 +231,11 @@ export default function QuotePage() {
         issues:           checkedIssues,
         location:        (fd.get("location") as string) || null,
         notes:            notes || null,
+        photo_urls:       photoUrls,
       }),
     });
+
+    setUploadStatus("");
 
     if (!res.ok) {
       setSubmitError("Something went wrong sending your request. Please try again.");
@@ -141,6 +246,8 @@ export default function QuotePage() {
     setSubmitted(true);
     window.scrollTo({ top: 200, behavior: "smooth" });
   }
+
+  const canAddMore = photos.length < MAX_PHOTOS;
 
   return (
     <>
@@ -308,29 +415,75 @@ export default function QuotePage() {
                   </FormSection>
 
                   {/* 6. PHOTOS */}
-                  <FormSection num={6} title="Add photos (optional)" desc="A quick photo of the inside or outside helps us quote more accurately.">
-                    <label className="flex flex-col items-center text-center cursor-pointer rounded-2xl p-8 border-2 border-dashed border-navy/20 bg-warm-100 transition-all hover:border-green hover:bg-green/[0.04]">
-                      <input
-                        type="file"
-                        name="photos"
-                        accept="image/*"
-                        multiple
-                        className="hidden"
-                        onChange={(e) => setFileCount(e.target.files?.length ?? 0)}
-                      />
-                      <div className="w-12 h-12 rounded-xl bg-green flex items-center justify-center mb-3">
-                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2">
-                          <path d="M12 4v16M4 12h16" />
-                        </svg>
-                      </div>
-                      <div className="font-semibold text-[15px] mb-1">Click to upload photos</div>
-                      <div className="text-sm text-warm-500">JPG or PNG, up to 5 photos</div>
-                      {fileCount > 0 && (
-                        <div className="mt-3 text-sm font-semibold text-green-dark">
-                          &#10003; {fileCount} photo{fileCount !== 1 ? "s" : ""} attached
+                  <FormSection num={6} title="Add photos (optional)" desc="A photo of your interior or exterior helps us quote more accurately.">
+
+                    {/* Upload area — hidden when at limit */}
+                    {canAddMore && (
+                      <label className="flex flex-col items-center text-center cursor-pointer rounded-2xl p-6 border-2 border-dashed border-navy/20 bg-warm-100 transition-all hover:border-green hover:bg-green/[0.04]">
+                        <input
+                          type="file"
+                          accept=".jpg,.jpeg,.png,image/jpeg,image/png"
+                          multiple
+                          className="hidden"
+                          onChange={handleFileChange}
+                        />
+                        <div className="w-12 h-12 rounded-xl bg-green flex items-center justify-center mb-3">
+                          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2">
+                            <path d="M12 4v16M4 12h16" />
+                          </svg>
                         </div>
-                      )}
-                    </label>
+                        <div className="font-semibold text-[15px] mb-1">
+                          {photos.length === 0 ? "Click to add photos" : `Add more (${photos.length} / ${MAX_PHOTOS})`}
+                        </div>
+                        <div className="text-sm text-warm-500">JPG or PNG · Max 10 MB each · Up to 5 photos</div>
+                      </label>
+                    )}
+
+                    {/* Validation error */}
+                    {photoError && (
+                      <p className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-xl px-4 py-3 mt-3">
+                        {photoError}
+                      </p>
+                    )}
+
+                    {/* Thumbnail grid */}
+                    {photos.length > 0 && (
+                      <div className="grid grid-cols-3 gap-3 mt-4">
+                        {photos.map((file, idx) => (
+                          <div
+                            key={idx}
+                            className="relative rounded-xl overflow-hidden bg-warm-200"
+                            style={{ aspectRatio: "1" }}
+                          >
+                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                            <img
+                              src={URL.createObjectURL(file)}
+                              alt={file.name}
+                              className="w-full h-full object-cover"
+                            />
+                            {/* Remove button */}
+                            <button
+                              type="button"
+                              onClick={() => removePhoto(idx)}
+                              className="absolute top-1.5 right-1.5 w-6 h-6 rounded-full bg-navy/75 text-white flex items-center justify-center text-xs leading-none hover:bg-red-600 transition-colors"
+                              aria-label={`Remove ${file.name}`}
+                            >
+                              ✕
+                            </button>
+                            {/* Filename */}
+                            <div className="absolute bottom-0 left-0 right-0 bg-navy/60 px-2 py-1">
+                              <p className="text-[10px] text-white truncate leading-tight">{file.name}</p>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
+                    {photos.length === MAX_PHOTOS && (
+                      <p className="text-xs text-warm-500 mt-3 text-center">
+                        5 photos selected. Remove one to add a different photo.
+                      </p>
+                    )}
                   </FormSection>
 
                   {/* 7. NOTES */}
@@ -347,14 +500,24 @@ export default function QuotePage() {
 
                   {/* SUBMIT */}
                   {submitError && (
-                    <p className="text-sm mt-2" style={{ color: "#e53e3e" }}>{submitError}</p>
+                    <p className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-xl px-4 py-3 mt-2">
+                      {submitError}
+                    </p>
                   )}
                   <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mt-8 pt-8 border-t border-navy/[0.08]">
                     <span className="text-sm text-warm-500">
-                      We&apos;ll get back to you within an hour during business hours (9 AM to 8 PM, every day).
+                      {uploadStatus || "We'll get back to you within an hour during business hours (9 AM to 8 PM, every day)."}
                     </span>
-                    <button type="submit" className="btn btn-green btn-lg" disabled={isSubmitting}>
-                      {isSubmitting ? "Sending…" : "Send my quote request →"}
+                    <button type="submit" className="btn btn-green btn-lg flex-shrink-0" disabled={isSubmitting}>
+                      {isSubmitting ? (
+                        <span className="flex items-center gap-2">
+                          <svg className="animate-spin w-4 h-4" viewBox="0 0 24 24" fill="none">
+                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                          </svg>
+                          {uploadStatus || "Sending…"}
+                        </span>
+                      ) : "Send my quote request →"}
                     </button>
                   </div>
 

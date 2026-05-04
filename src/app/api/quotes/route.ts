@@ -22,7 +22,7 @@ export async function POST(req: NextRequest) {
     service_interest: body.service_interest ?? null,
     issues:           body.issues           ?? [],
     location:         body.location         ?? null,
-    photo_urls:       [],
+    photo_urls:       body.photo_urls ?? [],
     notes:            body.notes            ?? null,
   });
 

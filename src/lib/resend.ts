@@ -150,6 +150,7 @@ type QuotePayload = {
   issues: string[];
   location?: string | null;
   notes?: string | null;
+  photo_urls?: string[];
 };
 
 export async function sendQuoteNotification(q: QuotePayload) {
@@ -182,6 +183,24 @@ export async function sendQuoteNotification(q: QuotePayload) {
       ${row("Location", locationText)}
       ${row("Notes", q.notes ?? null)}
     `)}
+    ${q.photo_urls && q.photo_urls.length > 0 ? `
+    <p style="margin:24px 0 8px;font-size:11px;font-weight:700;color:#aaa;text-transform:uppercase;letter-spacing:1.5px;">
+      Photos (${q.photo_urls.length})
+    </p>
+    <table cellpadding="0" cellspacing="0"><tr>
+      ${q.photo_urls.map((url, i) => `
+        <td style="padding:0 8px 0 0;vertical-align:top;">
+          <a href="${url}" target="_blank" style="text-decoration:none;">
+            <img src="${url}" width="180" alt="Photo ${i + 1}"
+              style="display:block;border-radius:8px;border:1px solid #E8E0D8;object-fit:cover;" />
+            <span style="display:block;text-align:center;font-size:11px;color:#888;margin-top:4px;">
+              Photo ${i + 1}
+            </span>
+          </a>
+        </td>
+      `).join("")}
+    </tr></table>
+    ` : ""}
   `;
 
   const { error } = await resend.emails.send({
