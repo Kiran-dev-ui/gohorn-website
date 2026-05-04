@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createAdminBrowserClient } from "@/lib/supabase-browser";
+import LogoMark from "@/components/LogoMark";
 
 export default function AdminLoginPage() {
   const [email, setEmail]       = useState("");
@@ -45,13 +46,12 @@ export default function AdminLoginPage() {
       <div className="w-full max-w-sm">
 
         {/* Logo */}
-        <div className="text-center mb-8">
-          <span className="font-fraunces text-3xl font-extrabold text-cream tracking-tight">
-            GoHorn
-          </span>
-          <p className="text-warm-500 text-sm mt-1 tracking-widest uppercase">
-            Admin Panel
-          </p>
+        <div className="flex items-center justify-center gap-3 mb-8">
+          <LogoMark />
+          <div className="text-left">
+            <div className="font-fraunces text-2xl font-extrabold text-cream leading-none">GoHorn</div>
+            <div className="text-[11px] text-cream/50 uppercase tracking-[2px] mt-0.5">Admin Panel</div>
+          </div>
         </div>
 
         {/* Card */}
