@@ -154,6 +154,7 @@ type QuotePayload = {
   service_interest?: string | null;
   issues: string[];
   location?: string | null;
+  address?: string | null;
   notes?: string | null;
   photo_urls?: string[];
 };
@@ -186,6 +187,7 @@ export async function sendQuoteNotification(q: QuotePayload) {
         <td style="padding:10px 0 10px 16px;border-bottom:1px solid #F0EBE3;">${issueText}</td>
       </tr>
       ${row("Location", locationText)}
+      ${row("Address", q.address ?? null)}
       ${row("Notes", q.notes ?? null)}
     `)}
     ${q.photo_urls && q.photo_urls.length > 0 ? section("Photos", row("Attached", `${q.photo_urls.length} photo${q.photo_urls.length !== 1 ? "s" : ""} &mdash; <a href="${SITE}/admin/quotes" style="color:${BRAND.green};font-weight:600;text-decoration:none;">View in admin panel &rarr;</a>`)) : ""}

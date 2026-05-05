@@ -147,6 +147,7 @@ export default function QuotePage() {
   const [notes, setNotes]                 = useState("");
   const [isSubmitting, setIsSubmitting]   = useState(false);
   const [submitError, setSubmitError]     = useState("");
+  const [locationPref, setLocationPref]   = useState<"shop" | "mobile">("shop");
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -230,6 +231,7 @@ export default function QuotePage() {
         service_interest:(fd.get("service")  as string) || null,
         issues:           checkedIssues,
         location:        (fd.get("location") as string) || null,
+        address:         (fd.get("address")  as string) || null,
         notes:            notes || null,
         photo_urls:       photoUrls,
       }),
@@ -401,17 +403,28 @@ export default function QuotePage() {
                   {/* 5. WHERE */}
                   <FormSection num={5} title="Where would you like the service?" desc="No extra charge either way.">
                     <div className="grid gap-3 grid-cols-1 sm:grid-cols-2">
-                      <label className="option-card">
-                        <input type="radio" name="location" value="shop" defaultChecked />
+                      <label className="option-card" onClick={() => setLocationPref("shop")}>
+                        <input type="radio" name="location" value="shop" defaultChecked onChange={() => setLocationPref("shop")} />
                         <div className="option-title">🏠 At our shop</div>
                         <div className="option-meta">304 Lake George Ave</div>
                       </label>
-                      <label className="option-card">
-                        <input type="radio" name="location" value="mobile" />
+                      <label className="option-card" onClick={() => setLocationPref("mobile")}>
+                        <input type="radio" name="location" value="mobile" onChange={() => setLocationPref("mobile")} />
                         <div className="option-title">🚐 Come to me</div>
-                        <div className="option-meta">We&apos;ll ask for your address</div>
+                        <div className="option-meta">We&apos;ll come to your location</div>
                       </label>
                     </div>
+                    {locationPref === "mobile" && (
+                      <div className="field mt-4">
+                        <label>Your address <span className="required">*</span></label>
+                        <input
+                          type="text"
+                          name="address"
+                          placeholder="Street, city, state, zip"
+                        />
+                        <span className="helper">Helps us plan when we call to confirm your quote.</span>
+                      </div>
+                    )}
                   </FormSection>
 
                   {/* 6. PHOTOS */}
