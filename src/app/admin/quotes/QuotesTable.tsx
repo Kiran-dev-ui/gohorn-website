@@ -14,6 +14,7 @@ export type Quote = {
   service_interest: string | null;
   issues: string[];
   location: string | null;
+  address: string | null;
   notes: string | null;
   photo_urls: string[] | null;
   status: string;
@@ -39,11 +40,11 @@ const ISSUE_LABELS: Record<string, string> = {
 };
 
 const STATUS_STYLES: Record<string, string> = {
-  new:       "bg-amber-100 text-amber-700",
-  contacted: "bg-blue-100 text-blue-700",
-  quoted:    "bg-purple-100 text-purple-700",
-  converted: "bg-emerald-100 text-emerald-700",
-  archived:  "bg-gray-100 text-gray-500",
+  new:       "bg-amber-50   text-amber-700   border border-amber-200",
+  contacted: "bg-blue-50    text-blue-700    border border-blue-200",
+  quoted:    "bg-purple-50  text-purple-700  border border-purple-200",
+  converted: "bg-green/[0.08] text-green-dark border border-green/20",
+  archived:  "bg-warm-100   text-warm-500    border border-warm-300",
 };
 
 const STATUSES = ["new", "contacted", "quoted", "converted", "archived"];
@@ -60,7 +61,7 @@ function vehicle(r: Quote) {
 }
 
 function StatusBadge({ status }: { status: string }) {
-  const cls = STATUS_STYLES[status] ?? "bg-gray-100 text-gray-600";
+  const cls = STATUS_STYLES[status] ?? "bg-warm-100 text-warm-500 border border-warm-300";
   return (
     <span className={`inline-block px-2.5 py-1 rounded-full text-[11px] font-bold uppercase tracking-wide ${cls}`}>
       {status}
@@ -72,7 +73,7 @@ function Field({ label, value, wide }: { label: string; value: string; wide?: bo
   return (
     <div className={wide ? "sm:col-span-2" : ""}>
       <div className="text-[10px] font-bold uppercase tracking-wider text-warm-500 mb-0.5">{label}</div>
-      <div className="text-sm text-navy">{value}</div>
+      <div className="text-sm text-navy leading-snug">{value}</div>
     </div>
   );
 }
@@ -132,7 +133,7 @@ export default function QuotesTable({ initialData }: { initialData: Quote[] }) {
       {/* Search + filter */}
       <div className="flex flex-col sm:flex-row gap-3 mb-5">
         <div className="relative flex-1 max-w-md">
-          <svg className="absolute left-3 top-1/2 -translate-y-1/2 text-warm-400" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <svg className="absolute left-3.5 top-1/2 -translate-y-1/2 text-warm-500" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <circle cx="11" cy="11" r="8" /><path d="m21 21-4.35-4.35" />
           </svg>
           <input
@@ -140,13 +141,13 @@ export default function QuotesTable({ initialData }: { initialData: Quote[] }) {
             placeholder="Search name, phone, or email…"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-9 pr-4 py-2.5 rounded-xl border border-navy/[0.12] bg-white text-sm text-navy placeholder:text-warm-400 focus:outline-none focus:ring-2 focus:ring-green focus:border-transparent"
+            className="w-full pl-10 pr-4 py-2.5 rounded-2xl border border-navy/[0.10] bg-white text-sm text-navy placeholder:text-warm-300 focus:outline-none focus:ring-2 focus:ring-green/40 focus:border-green transition shadow-sm"
           />
         </div>
         <select
           value={filter}
           onChange={(e) => setFilter(e.target.value)}
-          className="px-4 py-2.5 rounded-xl border border-navy/[0.12] bg-white text-sm text-navy focus:outline-none focus:ring-2 focus:ring-green"
+          className="px-4 py-2.5 rounded-2xl border border-navy/[0.10] bg-white text-sm text-navy focus:outline-none focus:ring-2 focus:ring-green/40 focus:border-green transition shadow-sm"
         >
           <option value="all">All statuses</option>
           {STATUSES.map((s) => (
@@ -157,8 +158,14 @@ export default function QuotesTable({ initialData }: { initialData: Quote[] }) {
 
       {/* Empty state */}
       {filtered.length === 0 && (
-        <div className="bg-white rounded-2xl border border-navy/[0.08] py-16 text-center">
-          <p className="text-warm-500 text-sm">
+        <div className="bg-white rounded-3xl border border-navy/[0.07] py-16 text-center shadow-sm">
+          <div className="w-12 h-12 rounded-2xl bg-warm-100 flex items-center justify-center mx-auto mb-3">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-warm-500">
+              <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" />
+              <polyline points="14,2 14,8 20,8" />
+            </svg>
+          </div>
+          <p className="text-warm-500 text-sm font-medium">
             {rows.length === 0 ? "No quote requests yet." : "No results match your search."}
           </p>
         </div>
@@ -166,11 +173,11 @@ export default function QuotesTable({ initialData }: { initialData: Quote[] }) {
 
       {/* Table */}
       {filtered.length > 0 && (
-        <div className="bg-white rounded-2xl border border-navy/[0.08] overflow-hidden">
+        <div className="bg-white rounded-3xl border border-navy/[0.07] overflow-hidden shadow-sm">
 
-          {/* Desktop header */}
+          {/* Desktop header — green top accent */}
           <div
-            className="hidden md:grid px-5 py-3 border-b border-navy/[0.08] bg-warm-100 text-[11px] font-bold uppercase tracking-wider text-warm-500"
+            className="hidden md:grid px-5 py-3 bg-warm-100 text-[11px] font-bold uppercase tracking-wider text-warm-500 border-b border-navy/[0.07] border-t-[3px] border-t-green"
             style={{ gridTemplateColumns: "2fr 1.5fr 1.5fr 0.8fr 0.6fr auto 28px" }}
           >
             <span>Customer</span>
@@ -189,11 +196,13 @@ export default function QuotesTable({ initialData }: { initialData: Quote[] }) {
             const photoCount = row.photo_urls?.length ?? 0;
 
             return (
-              <div key={row.id} className={!isLast || isExpanded ? "border-b border-navy/[0.06]" : ""}>
-
-                {/* Row */}
+              <div
+                key={row.id}
+                className={`${!isLast || isExpanded ? "border-b border-navy/[0.05]" : ""} ${idx % 2 === 1 ? "bg-[#FDFCF9]" : ""}`}
+              >
+                {/* Clickable row */}
                 <div
-                  className="px-5 py-4 cursor-pointer hover:bg-warm-100/40 transition-colors"
+                  className="px-5 py-4 cursor-pointer hover:bg-warm-100/60 transition-colors"
                   onClick={() => setExpandedId(isExpanded ? null : row.id)}
                 >
                   {/* Desktop */}
@@ -209,15 +218,24 @@ export default function QuotesTable({ initialData }: { initialData: Quote[] }) {
                       {row.service_interest ? (SERVICE_LABELS[row.service_interest] ?? row.service_interest) : "—"}
                     </div>
                     <div className="text-sm text-navy">{vehicle(row)}</div>
-                    <div className="text-sm text-warm-700">
+                    <div className="text-sm text-warm-500">
                       {issueCount > 0 ? `${issueCount} issue${issueCount !== 1 ? "s" : ""}` : "—"}
                     </div>
-                    <div className="text-sm text-warm-700">
-                      {photoCount > 0 ? `${photoCount} photo${photoCount !== 1 ? "s" : ""}` : "—"}
+                    <div className="text-sm text-warm-500">
+                      {photoCount > 0 ? (
+                        <span className="inline-flex items-center gap-1 text-green-dark font-semibold">
+                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                            <rect x="3" y="3" width="18" height="18" rx="2" />
+                            <circle cx="8.5" cy="8.5" r="1.5" />
+                            <polyline points="21,15 16,10 5,21" />
+                          </svg>
+                          {photoCount}
+                        </span>
+                      ) : "—"}
                     </div>
                     <StatusBadge status={row.status} />
                     <svg
-                      className={`text-warm-400 transition-transform duration-200 flex-shrink-0 ${isExpanded ? "rotate-180" : ""}`}
+                      className={`text-warm-300 transition-transform duration-200 flex-shrink-0 ${isExpanded ? "rotate-180" : ""}`}
                       width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                       <path d="M6 9l6 6 6-6" />
                     </svg>
@@ -232,7 +250,7 @@ export default function QuotesTable({ initialData }: { initialData: Quote[] }) {
                       </div>
                       <div className="flex items-center gap-2 flex-shrink-0">
                         <StatusBadge status={row.status} />
-                        <svg className={`text-warm-400 transition-transform duration-200 ${isExpanded ? "rotate-180" : ""}`}
+                        <svg className={`text-warm-300 transition-transform duration-200 ${isExpanded ? "rotate-180" : ""}`}
                           width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                           <path d="M6 9l6 6 6-6" />
                         </svg>
@@ -251,11 +269,12 @@ export default function QuotesTable({ initialData }: { initialData: Quote[] }) {
 
                 {/* Expanded details */}
                 {isExpanded && (
-                  <div className="px-5 pb-5 pt-3 bg-warm-100/50 border-t border-navy/[0.06]">
+                  <div className="px-5 pb-6 pt-4 bg-cream border-t border-navy/[0.05] border-l-[3px] border-l-green/25">
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-4 mb-5">
                       <Field label="Email" value={row.customer_email} />
                       <Field label="Location"
                         value={row.location === "shop" ? "At our shop" : row.location === "mobile" ? "Mobile (come to them)" : row.location ?? "—"} />
+                      {row.address && <Field label="Address" value={row.address} />}
                       <Field label="Submitted" value={fmtDate(row.created_at)} />
                       {issueCount > 0 && (
                         <Field
@@ -285,7 +304,7 @@ export default function QuotesTable({ initialData }: { initialData: Quote[] }) {
                                 setLightboxPhotos(row.photo_urls!);
                                 setLightboxIdx(i);
                               }}
-                              className="relative rounded-lg overflow-hidden bg-warm-200 hover:opacity-80 transition-opacity focus:outline-none focus:ring-2 focus:ring-green"
+                              className="relative rounded-xl overflow-hidden bg-warm-100 hover:opacity-80 transition-opacity focus:outline-none focus:ring-2 focus:ring-green shadow-sm"
                               style={{ aspectRatio: "1" }}
                               aria-label={`View photo ${i + 1}`}
                             >
@@ -298,12 +317,12 @@ export default function QuotesTable({ initialData }: { initialData: Quote[] }) {
                     )}
 
                     <div className="flex items-center gap-3 flex-wrap">
-                      <span className="text-xs font-bold uppercase tracking-wider text-warm-500">Update status</span>
+                      <span className="text-[11px] font-bold uppercase tracking-wider text-warm-500">Update status</span>
                       <select
                         value={row.status}
                         disabled={updatingId === row.id}
                         onChange={(e) => updateStatus(row.id, e.target.value)}
-                        className="px-3 py-1.5 rounded-lg border border-navy/[0.12] bg-white text-sm text-navy focus:outline-none focus:ring-2 focus:ring-green disabled:opacity-50 cursor-pointer"
+                        className="px-3 py-1.5 rounded-xl border border-navy/[0.10] bg-white text-sm text-navy focus:outline-none focus:ring-2 focus:ring-green/40 disabled:opacity-50 cursor-pointer shadow-sm"
                       >
                         {STATUSES.map((s) => (
                           <option key={s} value={s}>{s.charAt(0).toUpperCase() + s.slice(1)}</option>

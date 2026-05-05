@@ -16,7 +16,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   }
 
   return (
-    <div className="min-h-screen" style={{ background: "#F0EFEA" }}>
+    <div className="min-h-screen bg-cream">
       <AdminSidebar />
       {/* Desktop: push content right of sidebar. Mobile: push content below top bar. */}
       <div className="lg:pl-[240px] pt-[60px] lg:pt-0">

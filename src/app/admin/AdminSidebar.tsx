@@ -46,12 +46,13 @@ function NavLinks({ onNav }: { onNav?: () => void }) {
 
   return (
     <div className="flex flex-col h-full">
+
       {/* Logo */}
-      <div className="flex items-center gap-3 px-5 py-5 border-b border-white/[0.08]">
+      <div className="flex items-center gap-3 px-5 py-5 border-b border-white/[0.07]">
         <LogoMark />
         <div>
           <div className="font-fraunces font-extrabold text-cream text-[18px] leading-none">GoHorn</div>
-          <div className="text-[10px] text-cream/40 uppercase tracking-[2px] mt-0.5">Admin</div>
+          <div className="text-[9px] font-semibold text-cream/40 uppercase tracking-[2.5px] mt-[3px]">Detailing · Admin</div>
         </div>
       </div>
 
@@ -64,13 +65,21 @@ function NavLinks({ onNav }: { onNav?: () => void }) {
               key={item.href}
               href={item.href}
               onClick={onNav}
-              className={`flex items-center gap-3 px-4 py-3 rounded-xl mb-1 no-underline transition-all duration-200 ${
+              className={`relative flex items-center gap-3 px-4 py-3 rounded-xl mb-1 no-underline transition-all duration-200 overflow-hidden ${
                 active
-                  ? "bg-green text-white"
-                  : "text-cream/70 hover:bg-white/[0.06] hover:text-cream"
+                  ? "bg-white/[0.08] text-cream"
+                  : "text-cream/55 hover:bg-white/[0.05] hover:text-cream/90"
               }`}
             >
-              {item.icon}
+              {/* Active left-bar indicator */}
+              <span
+                className={`absolute left-0 inset-y-0 w-[3px] rounded-r-full transition-all duration-200 ${
+                  active ? "bg-green opacity-100" : "opacity-0"
+                }`}
+              />
+              <span className={`flex-shrink-0 transition-colors ${active ? "text-green" : ""}`}>
+                {item.icon}
+              </span>
               <span className="font-semibold text-[14px]">{item.label}</span>
             </Link>
           );
@@ -78,13 +87,13 @@ function NavLinks({ onNav }: { onNav?: () => void }) {
       </nav>
 
       {/* Logout */}
-      <div className="px-3 pb-5 pt-4 border-t border-white/[0.08]">
+      <div className="px-3 pb-5 pt-4 border-t border-white/[0.07]">
         <button
           onClick={handleLogout}
           disabled={loggingOut}
-          className="flex items-center gap-3 w-full px-4 py-3 rounded-xl text-cream/50 hover:bg-white/[0.06] hover:text-cream transition-all duration-200 text-[14px] font-semibold disabled:opacity-40"
+          className="flex items-center gap-3 w-full px-4 py-3 rounded-xl text-cream/40 hover:bg-white/[0.05] hover:text-red-400 transition-all duration-200 text-[14px] font-semibold disabled:opacity-30"
         >
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4" />
             <polyline points="16,17 21,12 16,7" />
             <line x1="21" y1="12" x2="9" y2="12" />
@@ -92,6 +101,7 @@ function NavLinks({ onNav }: { onNav?: () => void }) {
           {loggingOut ? "Signing out…" : "Logout"}
         </button>
       </div>
+
     </div>
   );
 }
@@ -107,7 +117,7 @@ export default function AdminSidebar() {
       </aside>
 
       {/* ── Mobile top bar ── */}
-      <div className="lg:hidden fixed top-0 left-0 right-0 z-50 bg-navy border-b border-white/[0.08] h-[60px] flex items-center px-4">
+      <div className="lg:hidden fixed top-0 left-0 right-0 z-50 bg-navy border-b border-white/[0.07] h-[60px] flex items-center px-4">
         <button
           onClick={() => setOpen((o) => !o)}
           className="w-11 h-11 flex flex-col items-center justify-center gap-[5px] mr-3 -ml-1 flex-shrink-0"
@@ -119,8 +129,8 @@ export default function AdminSidebar() {
           <span className={`block w-5 h-[2px] bg-cream rounded-full transition-all duration-300 origin-center ${open ? "-rotate-45 -translate-y-[7px]" : ""}`} />
         </button>
         <LogoMark />
-        <span className="font-fraunces font-extrabold text-cream text-[18px] ml-2">GoHorn</span>
-        <span className="text-cream/40 text-[10px] ml-2 uppercase tracking-[2px] mt-0.5">Admin</span>
+        <span className="font-fraunces font-extrabold text-cream text-[18px] ml-2.5">GoHorn</span>
+        <span className="text-green text-[9px] font-semibold ml-2 uppercase tracking-[2.5px] mt-0.5">Admin</span>
       </div>
 
       {/* ── Mobile drawer ── */}
