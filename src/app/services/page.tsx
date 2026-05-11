@@ -50,13 +50,11 @@ const PACKAGES = [
 ];
 
 const COMPARE_ROWS = [
-  { label: "Hand wash exterior",       express: "✓",     interior: "—",    full: "✓" },
-  { label: "Wax & shine",              express: "✓",     interior: "—",    full: "✓" },
-  { label: "Wheels & tires",           express: "✓",     interior: "—",    full: "✓" },
+  { label: "Hand wash exterior",       express: "✓",     interior: "✓",    full: "✓" },
+  { label: "Wax & shine",              express: "✓",     interior: "✓",    full: "✓" },
+  { label: "Wheels & tires",           express: "✓",     interior: "✓",    full: "✓" },
   { label: "Deep interior vacuum",     express: "Quick", interior: "✓",    full: "✓" },
   { label: "Carpet & mat shampoo",     express: "—",     interior: "✓",    full: "✓" },
-  { label: "Odor treatment",           express: "—",     interior: "✓",    full: "✓" },
-  { label: "Polish & paint correction",express: "—",     interior: "—",    full: "✓" },
   { label: "Pet hair removal",         express: "—",     interior: "—",    full: "✓" },
   { label: "Stain removal",            express: "—",     interior: "—",    full: "✓" },
 ];
@@ -109,14 +107,6 @@ const ADDONS = [
     desc: "Coffee, ink, mystery spots from years ago. Targeted treatment for stains that a regular shampoo won't touch.",
     icon: (
       <path d="M12 2C8 6 6 9 6 13a6 6 0 0012 0c0-4-2-7-6-11z" />
-    ),
-  },
-  {
-    name: "Deep Odor Treatment",
-    slug: "odor",
-    desc: "Smoke, food, pets, or just years of life. Our ozone treatment neutralizes odors at the source.",
-    icon: (
-      <path d="M3 6c5 0 5 6 0 6M21 6c-5 0-5 6 0 6M3 18c5 0 5-6 0-6M21 18c-5 0-5-6 0-6" />
     ),
   },
   {

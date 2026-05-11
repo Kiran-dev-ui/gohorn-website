@@ -78,7 +78,7 @@ const ISSUES = [
   { value: "engine",     label: "🔧 Engine bay cleaning" },
 ];
 
-const CHECKBOX_ADDONS = ["pet_hair", "stains", "odor", "headlights", "ceramic", "engine"];
+const CHECKBOX_ADDONS = ["pet_hair", "stains", "headlights", "ceramic", "engine"];
 const NOTES_ADDONS: Record<string, string> = {
   clay:    "I'm interested in Clay Bar Treatment",
   leather: "I'm interested in Leather Conditioning",
