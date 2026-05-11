@@ -116,7 +116,7 @@ function SuccessCard() {
       <h2 className="display mb-3" style={{ fontSize: 36 }}>Got it! We&apos;ll be in touch.</h2>
       <p className="text-[17px] text-warm-700 max-w-[480px] mx-auto mb-8" style={{ lineHeight: 1.6 }}>
         Your quote request is on its way to us. Expect a call or text from{" "}
-        <span className="text-green-dark font-bold">1-856-843-4676</span> within an hour during business hours.
+        <span className="text-green-dark font-bold">(989) 266-4381</span> within an hour during business hours.
       </p>
       <Link href="/" className="btn btn-primary">Back to home</Link>
     </div>
@@ -578,7 +578,7 @@ export default function QuotePage() {
                 <h4 className="font-fraunces text-[16px] mb-4">Need it faster?</h4>
                 <div className="flex flex-col gap-3">
                   <a
-                    href="tel:18568434676"
+                    href="tel:+19892664381"
                     className="flex items-center gap-2.5 no-underline transition-colors"
                     style={{ color: "rgba(250,247,240,0.85)", fontSize: 14 }}
                   >
@@ -590,10 +590,10 @@ export default function QuotePage() {
                         <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z" />
                       </svg>
                     </span>
-                    Call 1-856-THE-HORN
+                    (989) 266-4381
                   </a>
                   <a
-                    href="mailto:horn@unicorn.love"
+                    href="mailto:info@gohornllc.com"
                     className="flex items-center gap-2.5 no-underline transition-colors"
                     style={{ color: "rgba(250,247,240,0.85)", fontSize: 14 }}
                   >
@@ -606,7 +606,7 @@ export default function QuotePage() {
                         <polyline points="22,6 12,13 2,6" />
                       </svg>
                     </span>
-                    horn@unicorn.love
+                    info@gohornllc.com
                   </a>
                 </div>
               </div>

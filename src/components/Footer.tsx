@@ -45,10 +45,10 @@ export default function Footer() {
           <h4 className="font-fraunces text-base font-bold mb-4">Contact</h4>
           <PhoneLink light className="block text-cream/60 py-1.5 text-sm hover:text-green-light transition-colors" />
           <a
-            href="mailto:horn@unicorn.love"
+            href="mailto:info@gohornllc.com"
             className="block text-cream/60 no-underline py-1.5 text-sm hover:text-green-light transition-colors"
           >
-            horn@unicorn.love
+            info@gohornllc.com
           </a>
         </div>
       </div>

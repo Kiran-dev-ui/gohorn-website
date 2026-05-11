@@ -282,9 +282,8 @@ function ConfirmationCard({ serviceName, addons, selDate, selTime, location, vYe
       </div>
       <p className="text-sm text-warm-500 mb-6">
         A confirmation has been sent to your email. We&apos;ll call from{" "}
-        <a href="tel:18568434676" className="phone-link light text-green-dark font-bold" style={{ display: "inline-flex" }}>
-          1-856-THE-HORN
-          <span className="phone-tooltip">1-856-843-4676</span>
+        <a href="tel:+19892664381" className="text-green-dark font-bold">
+          (989) 266-4381
         </a>
       </p>
       <Link href="/" className="btn btn-primary">Back to home</Link>

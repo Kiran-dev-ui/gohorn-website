@@ -7,11 +7,10 @@ export default function PhoneLink({
 }) {
   return (
     <a
-      href="tel:18568434676"
+      href="tel:+19892664381"
       className={`phone-link ${light ? "light" : ""} ${className}`}
     >
-      1-856-THE-HORN
-      <span className="phone-tooltip">1-856-843-4676</span>
+      (989) 266-4381
     </a>
   );
 }
